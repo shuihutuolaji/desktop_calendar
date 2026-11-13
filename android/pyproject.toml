@@ -1,0 +1,9 @@
+[project]
+name = "calendar-mobile"
+version = "1.0.0"
+description = "桌面日历清单 安卓版"
+requires-python = ">=3.9"
+dependencies = [
+    "chinesecalendar",
+    "cnlunar",
+]

@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.pyc
+
+# Build artifacts
+build/
+dist/
+*.exe
+*.apk
+
+# Personal data / local config
+data/
+settings.json
+local.properties
+_signing.cer
+*.cer
+
+# Gradle
+.gradle/
+
+# OS
+Thumbs.db
+.DS_Store
