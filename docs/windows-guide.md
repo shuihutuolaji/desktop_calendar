@@ -108,34 +108,36 @@ run.bat                       # 用 Python 启动
 **重新打包 exe**（改完代码后，本项目用 spec 方式，会把 CHANGELOG.md 一起打进去）：
 
 ```bash
-set TEMP=C:\Users\W\AppData\Local\Temp
-set TMP=C:\Users\W\AppData\Local\Temp
-python -m PyInstaller DesktopCalendar.spec --noconfirm --distpath "." --workpath "C:\Users\W\AppData\Local\Temp\dc_build"
+python -m PyInstaller DesktopCalendar.spec --noconfirm --distpath "."
 # 产物直接覆盖本文件夹的 DesktopCalendar.exe
 ```
 
-> 注意：必须用**带 tkinter** 的 Python 打包（本机的 Python 3.13 未装 tkinter，
-> 用 `C:\Users\W\AppData\Local\Programs\Python\Python312\python.exe`）。
+如需指定临时构建目录，可加 `--workpath <目录>`（例如放到系统临时目录）。
+
+> 注意：必须用**带 tkinter** 的 Python 打包（部分 Python 发行版默认不带 tkinter，
+> 换用带 tkinter 的版本即可，如 Python 3.12）。
 > 打包前先关掉正在运行的日历，否则旧 exe 被占用、无法覆盖。
 > 可选依赖 `chinese_calendar`（法定节假日）、`cnlunar`（农历/节气）、
 > `Pillow`（背景图片）若已安装会被一起打进去，缺失也不影响启动。
 
 ## 数据
 
-- 存储位置：`E:\99 tool\30 独立小项目\desktop_calendar\data\calendar.db`（SQLite，程序自动创建）
+- 存储位置：程序文件夹下的 `data\calendar.db`（SQLite，程序自动创建）
 - 备份 = 复制整个工具文件夹；换电脑把文件夹拷走即可继续用。
 - 清理数据：直接删掉 `data\calendar.db`（会清空全部任务）。
 
 ## 目录结构
 
 ```
-E:\99 tool\30 独立小项目\desktop_calendar\
-├── calendar_app.py      # 主程序（Python + Tkinter，无第三方依赖）
-├── run.bat              # 双击启动
-├── README.md            # 用户功能说明
-├── README_LLM.md        # 给大模型/AI 的技术档案（架构、行号地图、修改指南）
-├── CHANGELOG.md         # 修订日志：每次改代码在这里补一条（设置 → 📜 修订日志 可直接看）
-└── data/calendar.db     # 任务数据（自动创建）
+（仓库根目录）
+├── calendar_app.py        # 主程序（Python + Tkinter，无第三方依赖）
+├── run.bat                # 双击启动
+├── DesktopCalendar.spec   # PyInstaller 打包配置
+├── README.md              # 项目总览（双端）
+├── README_LLM.md          # 给大模型/AI 的技术档案（架构、行号地图、修改指南）
+├── CHANGELOG.md           # 修订日志：每次改代码在这里补一条（设置 → 📜 修订日志 可直接看）
+├── docs/windows-guide.md  # 本文件（Windows 版详细指南）
+└── data/calendar.db       # 任务数据（自动创建，不入库）
 ```
 
 ## 修订日志
