@@ -131,7 +131,8 @@ kv(key TEXT PK, value TEXT)          -- 备份/订阅时间戳
 `alpha`(0.5–1 透明度)、`topmost`(置顶)、`language`("zh"/"en")、`country`("cn" 假期库)、
 `remind_early`(提前提醒分钟)、`auto_backup`、`ics_url`、`geometry`("WxH±X±Y")、
 `show_holiday/show_weekno/show_lunar/show_terms/show_rest`、`week_start`("mon"/"sun")、
-`cal_fg`、`accent`、`wecom_webhook`、`wecom_push`、`wecom_corp_id/wecom_agent_id/
+`cal_fg`、`accent`、`theme`(v1.9.1 主题预设名，只作设置页选中态回显)、
+`wecom_webhook`、`wecom_push`、`wecom_corp_id/wecom_agent_id/
 wecom_corp_secret`(自建应用)、`bg_color`、`bg_image_path`、`embedded`(贴桌面模式)、
 `desktop_bottom`(吸底)、`cal_font`/`task_font`(`{family,size}`)。
 
@@ -211,6 +212,8 @@ wecom_corp_secret`(自建应用)、`bg_color`、`bg_image_path`、`embedded`(贴
 | 打字保护闩锁（v1.8.3，红线） | `_ime_plain` 闩锁=「打字中，跳过贴底校验」。**任何重建 UI 的代码路径（如 set_language）必须先清闩锁**（`_ime_plain=False`+停看门狗+还原分层）——重建销毁持焦点的输入框后 FocusOut 不再触发，闩锁会永久卡死，日历浮在最上层且点固定无效。所有跳过贴底校验的入口（`_bottom_tick`/`_on_win_activate`/`_ensure_desktop_bottom`）统一走 `_typing_guard_active()`（实时核对焦点真实性，失效就地自愈），**别改回盲信 `_ime_plain`** |
 | 显示器热插拔（v1.8.4） | `WM_DISPLAYCHANGE` 由托盘消息窗口线程 `_proc` 捕获 → `_emit` 队列回主线程 → `_on_display_changed`（防抖 300ms）→ `_display_fix`：`_clamp_into_screen`+补贴底；`show_from_tray` 恢复时也必调 `_clamp_into_screen`（窗口可能停在幽灵屏坐标，只恢复状态等于没恢复），deiconify 失效时 withdraw+deiconify 组合拳（Unmap 有 state 检查不会误触发缩托盘）。**「显示/恢复/布局变化」三条路都必须带坐标钳制**，别只管 state |
 | 日期选择控件 DateSpin（v1.8.5） | 三联 `tk.Spinbox`（年/月/日）替代手敲 YYYY-MM-DD，用在两日期相差/倒数日弹窗/编辑任务改期。**经典 tk.Spinbox 没有 `.set()`**，写值必须走 `_put()`（delete/insert）；天数随年月联动（`_sync_days` + `calendar.monthrange`，越界回落）；`get_date()` 残缺/非法返回 None 由调用方弹 `calc_bad_date`。新增日期输入一律用 DateSpin，别再开文本框 |
+| 多通道推送（v1.9.0） | 提醒触发（check_reminders）按开关并行推三通道：企业微信 `notify_wecom` / Telegram `telegram_push(token,chat,proxy)` / 微信 `serverchan_push(sendkey)`，各自后台线程、超时 10s。**约束：纯 urllib 标准库，禁止引第三方依赖**；TG 国内直连不通靠可选代理；SC SendKey 服务号是个人微信唯一稳妥通道。测试按钮统一发 `push_test_msg`，失败弹 `wecom_send_fail`。通道开关/凭据持久化在 settings.json（tg_*/sc_* 前缀） |
+| 主题预设（v1.9.1） | `THEMES` 七套浅色配色（bg/cal_fg/task_fg/accent 四项），设置页 Canvas 预览卡片（QQ 风格）点击走 `_apply_theme_preset`→一次设四属性+apply_theme+refresh+persist。**持久化语义**：settings.json 只存 `theme` 名（选中态回显），颜色本体按细项键还原——套用后用户仍可单独微调，重启不丢微调。**只收浅色系**：月历格子是白卡（COLOR["cell"]）+格内文字用 cal_fg/task_fg 上色，深色底会白格深字不可读，加主题别放深色底（除非同时把格色做成动态，那是大改） |
 
 ## 10. 已知约束与红线
 

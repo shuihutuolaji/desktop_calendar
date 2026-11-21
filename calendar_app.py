@@ -480,7 +480,7 @@ SETTINGS_PATH = BASE_DIR / "settings.json"
 
 # 程序版本 + 修订日志文件：每次改动请改版本号，并在 CHANGELOG.md 顶部补一条说明
 # （界面「设置 → 📜 修订日志」直接读这个文件，方便随时回看改了什么）
-APP_VERSION = "1.8.5"
+APP_VERSION = "1.9.3"
 CHANGELOG_FILE = "CHANGELOG.md"
 
 # ---------------------------------------------------------------------------
@@ -818,6 +818,35 @@ TYPE_ORDER = ["day", "week", "month", "workday"]
 # 参与「周期系列」生成各期的任务类型（周/月/工作日）
 SERIES_KINDS = ("week", "month", "workday")
 
+# ---------------------------------------------------------------------------
+# 外观主题预设（v1.9.1）：一键套用整套配色，细项（单色/背景图）仍可单独调整。
+# 只收浅色系底：月历格子保持白卡样式（COLOR["cell"]），格内文字用
+# cal_fg/task_fg 上色——若放深色底会与白格文字对比冲突，故不设深色主题。
+THEMES = {
+    "classic":  {"zh": "经典", "en": "Classic",
+                 "bg": "#f0f0f0", "cal_fg": "#1f2937",
+                 "task_fg": "#111827", "accent": "#2563eb"},
+    "sky":      {"zh": "天空", "en": "Sky",
+                 "bg": "#e3edf8", "cal_fg": "#0c4a6e",
+                 "task_fg": "#075985", "accent": "#0284c7"},
+    "mint":     {"zh": "薄荷", "en": "Mint",
+                 "bg": "#e6f4ea", "cal_fg": "#14532d",
+                 "task_fg": "#166534", "accent": "#16a34a"},
+    "sakura":   {"zh": "樱花", "en": "Sakura",
+                 "bg": "#fbeef1", "cal_fg": "#831843",
+                 "task_fg": "#9d174d", "accent": "#db2777"},
+    "cream":    {"zh": "暖阳", "en": "Sunshine",
+                 "bg": "#f7f3e3", "cal_fg": "#713f12",
+                 "task_fg": "#78350f", "accent": "#ea580c"},
+    "lavender": {"zh": "雾紫", "en": "Lavender",
+                 "bg": "#ede9fe", "cal_fg": "#4c1d95",
+                 "task_fg": "#5b21b6", "accent": "#7c3aed"},
+    "graphite": {"zh": "石墨", "en": "Graphite",
+                 "bg": "#e5e7eb", "cal_fg": "#111827",
+                 "task_fg": "#1f2937", "accent": "#374151"},
+}
+DEFAULT_THEME = "classic"
+
 
 # ---------------------------------------------------------------------------
 # 双语界面文案（zh=中文 / en=English），T() 按当前语言取词
@@ -945,6 +974,7 @@ STR = {
         "win_size_hint": "（拖动窗口边缘也可调整）",
         "size_invalid": "宽高需为数字（宽 640–4000，高 420–3000）",
         "accent_color": "主题色（角标与选中格）：",
+        "theme": "主题（一键整套配色，细项可在下方单独调整）：",
         "bg_color": "背景颜色：",
         "bg_default": "默认", "bg_blue": "浅蓝", "bg_green": "浅绿",
         "bg_pink": "浅粉", "bg_beige": "米黄", "bg_gray": "深灰",
@@ -978,6 +1008,7 @@ STR = {
         "no_wecom_cfg2": "请先在设置里填写 Webhook 或应用参数",
         "no_tasks_today": "今天还没有任务，先添加再推送吧",
         "tray_show": "显示主窗口",
+        "tray_home": "回到主屏幕",
         "tray_add": "新增任务…",
         "qadd_title": "快速新增任务",
         "qadd_date": "日期",
@@ -1024,6 +1055,19 @@ STR = {
         "wecom_app_test_msg": "**桌面日历清单** 企业微信应用推送测试成功 ✅",
         "wecom_fill": "CorpID / AgentID / Secret 需填写完整",
         "wecom_remind_head": "**⏰ 桌面日历清单 · 任务提醒**",
+        "tg_section": "Telegram 推送：",
+        "tg_also_push": "任务提醒同时推送到 Telegram",
+        "tg_hint": ("Token：@BotFather 新建机器人获取；Chat ID：@userinfobot 查询；"
+                    "代理如 http://127.0.0.1:7890（可选，直连可留空）"),
+        "tg_fill": "Bot Token 和 Chat ID 需填写完整",
+        "tg_test_sent": "测试消息已发送，请在 Telegram 查看",
+        "tg_proxy": "代理",
+        "sc_section": "微信推送（Server酱）：",
+        "sc_also_push": "任务提醒同时推送到微信（Server酱）",
+        "sc_hint": "申请：sct.ftqq.com 微信扫码登录 → 复制 SendKey，消息经服务号送达个人微信",
+        "sc_fill": "请先填写 Server酱 SendKey",
+        "sc_test_sent": "测试消息已发送，请在微信「Server酱」服务号查看",
+        "push_test_msg": "桌面日历清单 推送测试 ✅\n如果你看到这条消息，说明推送通道已打通。",
         "export_title": "导出任务",
         "export_fail": "导出失败",
         "export_fail_msg": "写入文件失败：{e}",
@@ -1206,6 +1250,7 @@ STR = {
         "win_size_hint": "(or drag window edges)",
         "size_invalid": "Width/height must be numbers (W 640-4000, H 420-3000)",
         "accent_color": "Accent color (badges & selection):",
+        "theme": "Theme (one-click palette; fine-tune below):",
         "bg_color": "Background color:",
         "bg_default": "Default", "bg_blue": "Blue", "bg_green": "Green",
         "bg_pink": "Pink", "bg_beige": "Beige", "bg_gray": "Gray",
@@ -1239,6 +1284,7 @@ STR = {
         "no_wecom_cfg2": "Please fill in the Webhook or app parameters in Settings first",
         "no_tasks_today": "No tasks for today yet — add some first",
         "tray_show": "Show main window",
+        "tray_home": "Back to primary screen",
         "tray_add": "Add task…",
         "qadd_title": "Quick add task",
         "qadd_date": "Date",
@@ -1285,6 +1331,19 @@ STR = {
         "wecom_app_test_msg": "**Desktop Calendar** WeCom app push test OK ✅",
         "wecom_fill": "CorpID / AgentID / Secret are all required",
         "wecom_remind_head": "**⏰ Desktop Calendar · Task Reminder**",
+        "tg_section": "Telegram Push:",
+        "tg_also_push": "Also push reminders to Telegram",
+        "tg_hint": ("Token: create a bot via @BotFather; Chat ID: ask "
+                    "@userinfobot; proxy like http://127.0.0.1:7890 (optional)"),
+        "tg_fill": "Bot Token and Chat ID are required",
+        "tg_test_sent": "Test message sent — check Telegram",
+        "tg_proxy": "Proxy",
+        "sc_section": "WeChat Push (ServerChan):",
+        "sc_also_push": "Also push reminders to WeChat (ServerChan)",
+        "sc_hint": "Sign up at sct.ftqq.com (WeChat scan) → copy SendKey; delivered via its WeChat service account",
+        "sc_fill": "Please enter the ServerChan SendKey first",
+        "sc_test_sent": "Test message sent — check the ServerChan account in WeChat",
+        "push_test_msg": "Desktop Calendar push test ✅\nIf you see this message, the push channel works.",
         "export_title": "Export Tasks",
         "export_fail": "Export failed",
         "export_fail_msg": "Failed to write file: {e}",
@@ -1655,6 +1714,61 @@ def wecom_app_push(corpid: str, agentid, secret: str, content: str,
             return True, ""
         _wecom_token_cache.update(token="", expire_at=0.0)  # 失败清缓存，下次重取
         return False, f"errcode={data.get('errcode')} {data.get('errmsg', '')}"
+    except Exception as e:  # noqa: BLE001
+        return False, str(e)
+
+
+def telegram_push(token: str, chat_id: str, content: str, proxy: str = ""):
+    """Telegram Bot API 推送（v1.9.0），返回 (是否成功, 错误信息)。
+    Bot Token 由 @BotFather 创建机器人获取；Chat ID 由 @userinfobot 查询。
+    国内网络直连通常不通，proxy 可填 http://127.0.0.1:7890 之类（留空走直连/
+    系统环境变量代理）。企业微信 markdown 语法（**加粗**、> 引用）在此没有
+    意义，发送前剥掉。"""
+    if not (token and chat_id):
+        return False, "missing token/chat_id"
+    text = content.replace("**", "").replace("> ", "")
+    url = f"https://api.telegram.org/bot{token}/sendMessage"
+    payload = json.dumps({"chat_id": chat_id, "text": text},
+                         ensure_ascii=False).encode("utf-8")
+    handlers = []
+    if proxy:
+        handlers.append(urllib.request.ProxyHandler(
+            {"http": proxy, "https": proxy}))
+    try:
+        opener = urllib.request.build_opener(*handlers)
+        req = urllib.request.Request(
+            url, data=payload, headers={"Content-Type": "application/json"})
+        with opener.open(req, timeout=10) as resp:
+            data = json.loads(resp.read().decode("utf-8") or "{}")
+        if data.get("ok"):
+            return True, ""
+        return False, str(data.get("description", "unknown error"))
+    except Exception as e:  # noqa: BLE001
+        return False, str(e)
+
+
+def serverchan_push(sendkey: str, content: str):
+    """Server酱（Turbo）推送到个人微信（v1.9.0），返回 (是否成功, 错误信息)。
+    申请：sct.ftqq.com 微信扫码登录 → 复制 SendKey；消息经「Server酱」服务号
+    送达个人微信。第一行作为标题（≤32 字符），其余作正文；企业微信 markdown
+    标记剥掉（Server酱 desp 支持 markdown，> 引用行剥掉前缀即可）。"""
+    if not sendkey:
+        return False, "missing sendkey"
+    lines = [ln.strip() for ln in content.split("\n") if ln.strip()]
+    if not lines:
+        return False, "empty content"
+    title = lines[0].strip("*").strip()[:32]
+    desp = "\n\n".join(ln.lstrip("> ").strip() for ln in lines[1:]) or title
+    data = urllib.parse.urlencode({"title": title, "desp": desp}).encode("utf-8")
+    try:
+        req = urllib.request.Request(
+            f"https://sctapi.ftqq.com/{sendkey}.send", data=data,
+            headers={"Content-Type": "application/x-www-form-urlencoded"})
+        with urllib.request.urlopen(req, timeout=10) as resp:
+            body = json.loads(resp.read().decode("utf-8") or "{}")
+        if body.get("code") == 0:
+            return True, ""
+        return False, str(body.get("message", "unknown error"))
     except Exception as e:  # noqa: BLE001
         return False, str(e)
 
@@ -2556,11 +2670,25 @@ class CalendarApp(tk.Tk):
             self.task_fg = "#111827"
         if not re.fullmatch(r"#[0-9a-fA-F]{6}", self.accent or ""):
             self.accent = "#2563eb"
+        # 主题预设（v1.9.1）：只记录所选主题名用于设置页选中态回显；
+        # 颜色本体按上面的 color 配置还原——主题是「应用时的预设」，
+        # 套用后用户仍可单独微调，重启后以落盘的细项颜色为准。
+        self.theme_name = cfg.get("theme", DEFAULT_THEME)
+        if self.theme_name not in THEMES:
+            self.theme_name = DEFAULT_THEME
         self.wecom_webhook = str(cfg.get("wecom_webhook", "") or "")
         self.wecom_push = bool(cfg.get("wecom_push", True))
         self.wecom_corp_id = str(cfg.get("wecom_corp_id", "") or "")
         self.wecom_agent_id = str(cfg.get("wecom_agent_id", "") or "")
         self.wecom_corp_secret = str(cfg.get("wecom_corp_secret", "") or "")
+        # Telegram 推送（v1.9.0）：Bot Token / Chat ID / 可选代理
+        self.tg_token = str(cfg.get("tg_token", "") or "")
+        self.tg_chat = str(cfg.get("tg_chat", "") or "")
+        self.tg_proxy = str(cfg.get("tg_proxy", "") or "")
+        self.tg_push = bool(cfg.get("tg_push", False))
+        # Server酱 → 个人微信（v1.9.0）
+        self.sc_key = str(cfg.get("sc_key", "") or "")
+        self.sc_push = bool(cfg.get("sc_push", False))
         self.embedded = bool(cfg.get("embedded", True))  # 嵌桌面模式：无标题栏、不可拖动缩放
         self.desktop_bottom = bool(cfg.get("desktop_bottom", True))  # 固定时贴桌面底层（仅壁纸之上）
         self.bg_color = cfg.get("bg_color", "#f0f0f0")
@@ -2609,6 +2737,42 @@ class CalendarApp(tk.Tk):
         self.after(60_000, self._tick)  # 每分钟检查是否跨天，跨天自动顺延
         self.after(2_000, self.check_reminders)  # 启动后开始提醒循环
         self.after(15_000, self._ics_auto_sync)  # 稍后静默同步一次 ICS 订阅
+        self.after(5_000, self._offscreen_watchdog)  # 出屏看门狗（v1.9.3）
+
+    # ---------------- 出屏看门狗（v1.9.3） ----------------
+    def _offscreen_watchdog(self):
+        """每 5 秒检查一次窗口是否被甩到屏幕外。
+
+        兜底场景：显示器热插拔的 WM_DISPLAYCHANGE 广播丢失（扩展坞、
+        驱动就绪顺序、RDP 会话切换等系统压根不广播的情况），此时唯一的
+        救援路径就是本看门狗。窗口与所有显示器的最大可见相交面积不足
+        40% 时自动钳回屏内并补贴底；正常摆放（含贴边停靠）绝不动它。
+        先续命再检查：任何一轮异常都不能让看门狗断掉（同 _bottom_tick
+        的保活铁律，exe 无控制台，异常会被静默吞掉）。"""
+        self.after(5_000, self._offscreen_watchdog)
+        try:
+            if self.state() != "normal":     # 缩在托盘里时不打扰
+                return
+            rect = _window_rect(self)
+            if not rect:
+                return
+            x, y, w, h = rect
+            if w * h <= 0:
+                return
+            best = 0
+            for mon, _work in _screen_rects():
+                l, t, r, b = mon
+                ix = min(x + w, r) - max(x, l)
+                iy = min(y + h, b) - max(y, t)
+                if ix > 0 and iy > 0:
+                    best = max(best, ix * iy)
+            if best < w * h * 0.4:           # 可见面积不足 40%：视为出屏
+                _clamp_into_screen(self)
+                if self.embedded and self.desktop_bottom:
+                    # 同步压底会吞掉钳制刚发出的 geometry 移动，延后进行
+                    self.after(150, self._ensure_desktop_bottom)
+        except Exception:  # noqa: BLE001
+            pass
 
     # ---------------- 系统托盘 ----------------
     def _on_unmap(self, event):
@@ -2635,7 +2799,17 @@ class CalendarApp(tk.Tk):
                 # 检查，此处 state=withdrawn 不会触发缩托盘逻辑）
                 self.withdraw()
                 self.deiconify()
-        self.lift()
+        if self.embedded and self.desktop_bottom:
+            # 固定+贴底：恢复后绝不能 lift——NOACTIVATE 窗口 focus_force 常失败、
+            # <Activate> 不一定触发，lift 上去就靠 500ms 轮询兜底；轮询若恰好
+            # 断过就会一直浮在最上层（v1.9.2 修复）。
+            # 注意（v1.9.3）：上面的 _clamp_into_screen 可能刚发出 geometry 移动
+            # 请求，立刻同步 _ensure_desktop_bottom 里的 SetWindowPos 会把
+            # 这笔待应用的移动吞掉（实测复现）——压底必须延后进行。
+            self.after(150, self._ensure_desktop_bottom)
+            self.after(450, self._ensure_desktop_bottom)
+        else:
+            self.lift()
         # 显示器热插拔/改布局后，窗口可能停在已消失的幽灵屏坐标或被系统甩到
         # 边角出屏——「恢复」必须连带钳制回可见桌面，否则等于没恢复（v1.8.4）
         try:
@@ -2650,13 +2824,23 @@ class CalendarApp(tk.Tk):
     def _on_display_changed(self):
         """显示器布局变化（WM_DISPLAYCHANGE 经托盘消息窗口转发，防抖 300ms）。
         热插拔外接屏/改分辨率后窗口常落在幽灵坐标或半截出屏且托盘恢复救不回
-        （v1.8.3 及之前只有启动时救援）；现在实时钳制回可见桌面 + 补贴底。"""
-        if getattr(self, "_disp_job", None):
-            try:
-                self.after_cancel(self._disp_job)
-            except Exception:  # noqa: BLE001
-                pass
+        （v1.8.3 及之前只有启动时救援）；现在实时钳制回可见桌面 + 补贴底。
+
+        v1.9.3 加固：热插拔瞬间 Windows 会在随后 1~3 秒内反复重排窗口
+        （驱动就绪、DPI 重算、任务栏 relocation 各抖一次），只在 +300ms
+        钳一次会被后续抖动再次甩出屏外——改为 +300ms / +1.6s / +3.6s
+        分阶段连修三次，最后一次落点才算数。"""
+        for attr in ("_disp_job", "_disp_job2", "_disp_job3"):
+            job = getattr(self, attr, None)
+            if job:
+                try:
+                    self.after_cancel(job)
+                except Exception:  # noqa: BLE001
+                    pass
+                setattr(self, attr, None)
         self._disp_job = self.after(300, self._display_fix)
+        self._disp_job2 = self.after(1600, self._display_fix)
+        self._disp_job3 = self.after(3600, self._display_fix)
 
     def _display_fix(self):
         self._disp_job = None
@@ -2665,10 +2849,9 @@ class CalendarApp(tk.Tk):
         except Exception:  # noqa: BLE001
             pass
         if self.embedded and self.desktop_bottom:
-            try:
-                self._ensure_desktop_bottom()
-            except Exception:  # noqa: BLE001
-                pass
+            # 钳制刚发出 geometry 移动请求时，同步压底的 SetWindowPos 会把
+            # 待应用的移动吞掉（v1.9.3 实测复现）——压底一律延后一拍
+            self.after(150, self._ensure_desktop_bottom)
 
     def _tray_tip(self):
         """托盘悬浮提示：今日待办条数"""
@@ -2680,6 +2863,7 @@ class CalendarApp(tk.Tk):
         """托盘右键菜单项；每次弹出时重新取词，语言切换立即生效"""
         return [
             ("show", T("tray_show"), True),
+            ("home", T("tray_home"), True),
             ("add", T("tray_add"), True),
             (None, "", False),
             ("push", T("tray_push"), True),
@@ -2692,6 +2876,8 @@ class CalendarApp(tk.Tk):
     def _tray_menu_action(self, key):
         if key == "show":
             self.show_from_tray()
+        elif key == "home":
+            self._back_to_primary()
         elif key == "add":
             self._tray_quick_add_dialog()
         elif key == "push":
@@ -2703,6 +2889,34 @@ class CalendarApp(tk.Tk):
             self.open_settings()
         elif key == "exit":
             self.on_close()
+
+    def _back_to_primary(self):
+        """托盘「回到主屏幕」（v1.9.3）：窗口被甩到屏幕外/幽灵屏时的手动救援。
+        窗口若缩在托盘先恢复显示，再整体挪到主屏工作区居中偏上，
+        贴底状态顺带压回桌面底层，最后把好坐标落盘（坏坐标不留到下次启动）。
+
+        注意：geometry 移动请求发出后，立刻同步 _ensure_desktop_bottom 会把
+        待应用的移动吞掉（SetWindowPos 与 Tk 几何队列时序冲突，实测复现），
+        压底必须延后一拍；移动后再用 Win32 真实坐标校验一次，不到位就重试。"""
+        if self.state() != "normal":
+            self.show_from_tray()      # 先恢复显示（其内部已含一次钳制）
+        rects = _screen_rects()
+        if rects:
+            self.update_idletasks()    # 确保 winfo 拿到的是最新尺寸
+            w = max(self.winfo_width(), 640)
+            h = max(self.winfo_height(), 420)
+            l, t, r, b = rects[0][1]   # 主屏工作区（_screen_rects 主屏排最前）
+            nx = l + max(0, (r - l - w) // 2)
+            ny = t + max(0, (b - t - h) // 3)
+            for _attempt in range(3):
+                self.geometry(f"+{nx}+{ny}")
+                self.update_idletasks()
+                rect = _window_rect(self)   # Win32 真实外框，不信 Tk 缓存
+                if rect and abs(rect[0] - nx) < 40 and abs(rect[1] - ny) < 40:
+                    break
+            if self.embedded and self.desktop_bottom:
+                self.after(150, self._ensure_desktop_bottom)
+        self.persist_cfg()
 
     def _tray_push_today(self):
         """托盘「推送今日待办」：跳过勾选框，直接推送今天全部未完成任务"""
@@ -3030,6 +3244,28 @@ class CalendarApp(tk.Tk):
                 self.lbl_calc3.config(fg=self.accent)
         except (tk.TclError, AttributeError):
             pass
+
+    def _apply_theme_preset(self, key):
+        """套用主题预设（v1.9.1）：一次更新背景/框架文字/内容文字/主题色四个属性，
+        然后走既有刷新链（apply_theme 同步静态容器 + refresh 重渲染动态内容）。
+        不动字体大小与背景图；落盘后重启按细项颜色还原（见 __init__ 注释）。"""
+        th = THEMES.get(key)
+        if not th:
+            return
+        self.theme_name = key
+        self.bg_color = th["bg"]
+        self.cal_fg = th["cal_fg"]
+        self.task_fg = th["task_fg"]
+        self.accent = th["accent"]
+        self.apply_theme()
+        self.refresh()
+        self.persist_cfg()
+        # 设置窗口开着时同步卡片选中态描边
+        for fn in list(getattr(self, "_theme_card_painters", [])):
+            try:
+                fn()
+            except tk.TclError:
+                pass
 
     def _tick(self):
         """每分钟检查是否跨天；跨天则自动跟到新的一天。
@@ -4213,10 +4449,20 @@ class CalendarApp(tk.Tk):
                     title_key="toast_early", allow_done=False)
             if due:
                 self.show_reminder_toast(due)
+                content = self.format_wecom_reminder(due)
+                # 多通道推送（后台线程，互不阻塞）：企业微信 / Telegram / 微信(Server酱)
                 if self.wecom_push:
-                    content = self.format_wecom_reminder(due)
                     threading.Thread(target=lambda: self.notify_wecom(content, silent=True),
                                      daemon=True).start()
+                if self.tg_push and self.tg_token and self.tg_chat:
+                    threading.Thread(
+                        target=lambda: telegram_push(self.tg_token, self.tg_chat,
+                                                     content, self.tg_proxy),
+                        daemon=True).start()
+                if self.sc_push and self.sc_key:
+                    threading.Thread(
+                        target=lambda: serverchan_push(self.sc_key, content),
+                        daemon=True).start()
             self.check_event_day()
         finally:
             self.after(30_000, self.check_reminders)  # 放 finally：出错也不能让提醒停摆
@@ -4644,8 +4890,15 @@ class CalendarApp(tk.Tk):
                 "cal_fg": self.cal_fg,
                 "task_fg": self.task_fg,
                 "accent": self.accent,
+                "theme": self.theme_name,   # 主题预设名（v1.9.1，设置页选中态回显用）
                 "wecom_webhook": self.wecom_webhook,
                 "wecom_push": self.wecom_push,
+                "tg_token": self.tg_token,
+                "tg_chat": self.tg_chat,
+                "tg_proxy": self.tg_proxy,
+                "tg_push": self.tg_push,
+                "sc_key": self.sc_key,
+                "sc_push": self.sc_push,
                 "wecom_corp_id": self.wecom_corp_id,
                 "wecom_agent_id": self.wecom_agent_id,
                 "wecom_corp_secret": self.wecom_corp_secret,
@@ -5034,6 +5287,11 @@ class CalendarApp(tk.Tk):
         由 _typing_guard_active 实时发现并自愈，不再永久卡死。"""
         if _user32 is None:
             return
+        # 自愈（v1.9.2）：固定+贴底状态下保活定时器必须活着。任何历史路径
+        # 让定时器断掉（异常中断、遗漏启动）后，下一次走到这里就重新武装，
+        # 不再出现「被顶起后永远压不回去、只能重启应用」。
+        if self.embedded and self.desktop_bottom and self._bottom_job is None:
+            self._start_bottom_keep()
         if self._typing_guard_active():
             return  # 正在输入框打字：不压底层，否则会夺走键盘焦点
         hwnd = _toplevel_hwnd(self)
@@ -5075,11 +5333,20 @@ class CalendarApp(tk.Tk):
 
         打字期间跳过校验：_on_focus_in 为打字把窗口抢到前台，此时校验会判定
         窗口不在底层而压回去，立刻把键盘焦点带走，表现为输入框打不出字。
-        是否真在打字由 _typing_guard_active 实时判定（闩锁卡死会就地自愈）。"""
+        是否真在打字由 _typing_guard_active 实时判定（闩锁卡死会就地自愈）。
+
+        保活铁律（v1.9.2）：先把下一次定时器排上，再做校验——校验里任何一步
+        抛异常（资源管理器重启、显示器热插拔瞬间句柄失效等）都不能让循环
+        断掉；exe 无控制台，异常会被静默吞掉，循环一死日历被顶起就再也
+        压不回来，正是「某些场景下固定状态却浮在最上层」的根因。"""
         self._bottom_job = None
-        if self.embedded and self.desktop_bottom:
+        if not (self.embedded and self.desktop_bottom):
+            return
+        self._bottom_job = self.after(500, self._bottom_tick)  # 先续命，保证循环不死
+        try:
             self._ensure_desktop_bottom()
-            self._bottom_job = self.after(500, self._bottom_tick)
+        except Exception:  # noqa: BLE001  校验失败下一轮再试，绝不让循环中断
+            pass
 
     def open_settings(self):
         """设置对话框：外观 / 显示项 / 窗口层级 / 自启 / 提醒 / 备份 / 订阅 / 企业微信。
@@ -5277,6 +5544,41 @@ class CalendarApp(tk.Tk):
                        command=on_backup,
                        font=self.font_base).grid(row=14, column=0, sticky="w", pady=(6, 0))
 
+        # 主题预设（v1.9.1）：QQ 风格预览卡片，点卡片一键套用整套配色
+        def paint_theme_cards():
+            for key, cv in self._theme_cards.items():
+                th = THEMES[key]
+                sel = (key == self.theme_name)
+                edge = self.accent if sel else "#d1d5db"
+                cv.configure(highlightbackground=edge, highlightcolor=edge)
+                cv.delete("all")
+                w, h = 84, 52
+                cv.create_rectangle(2, 2, w - 2, h - 2, fill=th["bg"], outline="")
+                cv.create_rectangle(10, 9, w - 10, 14, fill=th["cal_fg"], outline="")
+                cv.create_rectangle(10, 21, w - 22, 26, fill=th["task_fg"], outline="")
+                cv.create_rectangle(10, 33, w - 36, 38, fill=th["task_fg"], outline="")
+                cv.create_oval(w - 17, 31, w - 8, 40, fill=th["accent"], outline="")
+
+        th_box = tk.Frame(frm)
+        th_box.grid(row=15, column=0, sticky="w", pady=(14, 0))
+        tk.Label(th_box, text=T("theme"), font=self.font_base).pack(anchor="w")
+        th_fr = tk.Frame(th_box)
+        th_fr.pack(anchor="w", pady=(4, 0))
+        self._theme_cards = {}
+        self._theme_card_painters = [paint_theme_cards]
+        for key in THEMES:
+            th = THEMES[key]
+            name = th["zh"] if self.lang == "zh" else th["en"]
+            cell = tk.Frame(th_fr)
+            cell.pack(side="left", padx=(0, 6))
+            cv = tk.Canvas(cell, width=84, height=52, bd=0,
+                           highlightthickness=2, cursor="hand2")
+            cv.pack()
+            tk.Label(cell, text=name, font=self.font_small).pack()
+            cv.bind("<Button-1>", lambda _e, k=key: self._apply_theme_preset(k))
+            self._theme_cards[key] = cv
+        paint_theme_cards()
+
         # 颜色设置
         def set_color(attr, col):
             setattr(self, attr, col)
@@ -5284,7 +5586,7 @@ class CalendarApp(tk.Tk):
             self.refresh()
 
         fg_frame = tk.Frame(frm)
-        fg_frame.grid(row=15, column=0, sticky="w", pady=(12, 0))
+        fg_frame.grid(row=16, column=0, sticky="w", pady=(12, 0))
         tk.Label(fg_frame, text=T("cal_fg"), font=self.font_base).pack(side="left")
         for name, col in [("黑", "#1f2937"), ("红", "#dc2626"), ("蓝", "#2563eb"),
                           ("棕", "#92400e"), ("紫", "#7c3aed")]:
@@ -5297,7 +5599,7 @@ class CalendarApp(tk.Tk):
                   command=lambda: self.pick_color("cal_fg")).pack(side="left", padx=2)
 
         ac_frame = tk.Frame(frm)
-        ac_frame.grid(row=16, column=0, sticky="w", pady=(8, 0))
+        ac_frame.grid(row=17, column=0, sticky="w", pady=(8, 0))
         tk.Label(ac_frame, text=T("accent_color"), font=self.font_base).pack(side="left")
         for name, col in [("蓝", "#2563eb"), ("绿", "#16a34a"), ("紫", "#7c3aed"),
                           ("橙", "#ea580c"), ("红", "#dc2626"), ("青", "#0891b2")]:
@@ -5308,7 +5610,7 @@ class CalendarApp(tk.Tk):
 
         # 背景定制
         bgc_frame = tk.Frame(frm)
-        bgc_frame.grid(row=17, column=0, sticky="w", pady=(12, 0))
+        bgc_frame.grid(row=18, column=0, sticky="w", pady=(12, 0))
         tk.Label(bgc_frame, text=T("bg_color"), font=self.font_base).pack(side="left")
         for name, col in [(T("bg_default"), "#f0f0f0"), (T("bg_blue"), "#e3edf8"), (T("bg_green"), "#e6f4ea"),
                           (T("bg_pink"), "#fbeef1"), (T("bg_beige"), "#f7f3e3"), (T("bg_gray"), "#3b4048")]:
@@ -5322,7 +5624,7 @@ class CalendarApp(tk.Tk):
                   command=lambda: self.pick_color("bg_color")).pack(side="left", padx=2)
 
         bgi_frame = tk.Frame(frm)
-        bgi_frame.grid(row=18, column=0, sticky="w", pady=(8, 0))
+        bgi_frame.grid(row=19, column=0, sticky="w", pady=(8, 0))
         tk.Label(bgi_frame, text=T("bg_image"), font=self.font_base).pack(side="left")
         tk.Button(bgi_frame, text=T("pick_image"), font=self.font_small, bd=0,
                   cursor="hand2", command=self.pick_bg_image).pack(side="left", padx=2)
@@ -5514,12 +5816,102 @@ class CalendarApp(tk.Tk):
         tk.Label(ws_fr, text=T("win_size_hint"), font=self.font_small,
                  fg=COLOR["text_sub"]).pack(side="left")
 
+        # Telegram 推送（v1.9.0）：Bot Token + Chat ID + 可选代理
+        tk.Label(frm, text=T("tg_section"), font=self.font_base).grid(
+            row=36, column=0, sticky="w", pady=(12, 0))
+        tg_fr = tk.Frame(frm)
+        tg_fr.grid(row=37, column=0, sticky="w")
+        tk.Label(tg_fr, text="Token", font=self.font_small).pack(side="left")
+        tg_token_entry = tk.Entry(tg_fr, width=32, font=self.font_small, show="*")
+        tg_token_entry.insert(0, self.tg_token)
+        tg_token_entry.pack(side="left", padx=(2, 6))
+        tk.Label(tg_fr, text="ChatID", font=self.font_small).pack(side="left")
+        tg_chat_entry = tk.Entry(tg_fr, width=16, font=self.font_small)
+        tg_chat_entry.insert(0, self.tg_chat)
+        tg_chat_entry.pack(side="left", padx=(2, 6))
+        tk.Label(tg_fr, text=T("tg_proxy"), font=self.font_small).pack(side="left")
+        tg_proxy_entry = tk.Entry(tg_fr, width=22, font=self.font_small)
+        tg_proxy_entry.insert(0, self.tg_proxy)
+        tg_proxy_entry.pack(side="left", padx=(2, 0))
+
+        def on_test_tg():
+            tok, cid, prx = (tg_token_entry.get().strip(),
+                             tg_chat_entry.get().strip(),
+                             tg_proxy_entry.get().strip())
+            if not (tok and cid):
+                messagebox.showwarning(T("tg_section"), T("tg_fill"),
+                                       parent=win)
+                return
+            self.tg_token, self.tg_chat, self.tg_proxy = tok, cid, prx
+
+            def work():
+                ok, err = telegram_push(tok, cid, T("push_test_msg"), prx)
+                msg = T("tg_test_sent") if ok else T("wecom_send_fail", e=err)
+                self.after(0, lambda: messagebox.showinfo(
+                    T("tg_section"), msg, parent=win))
+
+            threading.Thread(target=work, daemon=True).start()
+
+        tg_fr2 = tk.Frame(frm)
+        tg_fr2.grid(row=38, column=0, sticky="w", pady=(4, 0))
+        tk.Button(tg_fr2, text=T("btn_test"), font=self.font_small, width=5,
+                  command=on_test_tg).pack(side="left")
+        tg_var = tk.BooleanVar(value=self.tg_push)
+        tk.Checkbutton(tg_fr2, text=T("tg_also_push"), variable=tg_var,
+                       command=lambda: setattr(self, "tg_push", tg_var.get()),
+                       font=self.font_base).pack(side="left", padx=(10, 0))
+        tk.Label(frm, text=T("tg_hint"), font=self.font_small,
+                 fg=COLOR["text_sub"], wraplength=560, justify="left").grid(
+            row=39, column=0, sticky="w", pady=(2, 0))
+
+        # 微信推送（Server酱，v1.9.0）：个人微信无官方 API，经服务号通道送达
+        tk.Label(frm, text=T("sc_section"), font=self.font_base).grid(
+            row=40, column=0, sticky="w", pady=(12, 0))
+        sc_fr = tk.Frame(frm)
+        sc_fr.grid(row=41, column=0, sticky="w")
+        tk.Label(sc_fr, text="SendKey", font=self.font_small).pack(side="left")
+        sc_entry = tk.Entry(sc_fr, width=40, font=self.font_small, show="*")
+        sc_entry.insert(0, self.sc_key)
+        sc_entry.pack(side="left", padx=(2, 6))
+
+        def on_test_sc():
+            key = sc_entry.get().strip()
+            if not key:
+                messagebox.showwarning(T("sc_section"), T("sc_fill"),
+                                       parent=win)
+                return
+            self.sc_key = key
+
+            def work():
+                ok, err = serverchan_push(key, T("push_test_msg"))
+                msg = T("sc_test_sent") if ok else T("wecom_send_fail", e=err)
+                self.after(0, lambda: messagebox.showinfo(
+                    T("sc_section"), msg, parent=win))
+
+            threading.Thread(target=work, daemon=True).start()
+
+        tk.Button(sc_fr, text=T("btn_test"), font=self.font_small, width=5,
+                  command=on_test_sc).pack(side="left")
+        sc_var = tk.BooleanVar(value=self.sc_push)
+        tk.Checkbutton(sc_fr, text=T("sc_also_push"), variable=sc_var,
+                       command=lambda: setattr(self, "sc_push", sc_var.get()),
+                       font=self.font_base).pack(side="left", padx=(10, 0))
+        tk.Label(frm, text=T("sc_hint"), font=self.font_small,
+                 fg=COLOR["text_sub"], wraplength=560, justify="left").grid(
+            row=42, column=0, sticky="w", pady=(2, 0))
+
         def on_done():
             self.wecom_webhook = wecom_entry.get().strip()
             self.wecom_corp_id = corp_entry.get().strip()
             self.wecom_agent_id = agent_entry.get().strip()
             self.wecom_corp_secret = secret_entry.get().strip()
             self.ics_url = ics_entry.get().strip()
+            self.tg_token = tg_token_entry.get().strip()
+            self.tg_chat = tg_chat_entry.get().strip()
+            self.tg_proxy = tg_proxy_entry.get().strip()
+            self.tg_push = tg_var.get()
+            self.sc_key = sc_entry.get().strip()
+            self.sc_push = sc_var.get()
             self.persist_cfg()
             win.destroy()
 

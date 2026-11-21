@@ -8,6 +8,9 @@ dist/
 *.exe
 *.apk
 
+# Backups
+*.bak*
+
 # Personal data / local config
 data/
 settings.json
